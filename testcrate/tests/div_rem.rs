@@ -132,7 +132,11 @@ macro_rules! float {
     };
 }
 
-#[cfg(not(all(target_arch = "x86", not(target_feature = "sse"))))]
+#[cfg(not(all(
+    target_arch = "x86",
+    not(target_feature = "sse"),
+    target_family = "xun"
+)))]
 #[test]
 fn float_div() {
     use compiler_builtins::float::{

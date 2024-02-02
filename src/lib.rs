@@ -5,7 +5,7 @@
 #![cfg_attr(not(feature = "no-asm"), feature(global_asm))]
 #![feature(cfg_target_has_atomic)]
 #![feature(compiler_builtins)]
-#![feature(core_ffi_c)]
+#![cfg_attr(not(target_os = "xun"), feature(core_ffi_c))]
 #![feature(core_intrinsics)]
 #![feature(inline_const)]
 #![feature(lang_items)]
@@ -49,6 +49,7 @@ pub mod int;
     target_os = "uefi",
     target_os = "none",
     target_os = "xous",
+    target_os = "xun",
     all(target_vendor = "fortanix", target_env = "sgx"),
     target_os = "windows"
 ))]
@@ -82,5 +83,13 @@ pub mod x86;
 
 #[cfg(target_arch = "x86_64")]
 pub mod x86_64;
+
+#[cfg(all(target_os = "xun", target_feature = "static-syscalls"))]
+#[cfg_attr(not(feature = "mangled-names"), no_mangle)]
+#[linkage = "weak"]
+pub unsafe extern "C" fn abort() -> ! {
+    let syscall: extern "C" fn() -> ! = core::mem::transmute(3069975057u64); // murmur32 hash of "abort"
+    syscall()
+}
 
 pub mod probestack;

@@ -16,7 +16,12 @@
 
 extern crate panic_handler;
 
-#[cfg(all(not(thumb), not(windows), not(target_arch = "wasm32")))]
+#[cfg(all(
+    not(thumb),
+    not(windows),
+    not(target_arch = "wasm32"),
+    not(target_os = "xun")
+))]
 #[link(name = "c")]
 extern "C" {}
 
