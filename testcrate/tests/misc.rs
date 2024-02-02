@@ -170,7 +170,10 @@ macro_rules! pow {
     };
 }
 
-#[cfg(not(all(target_arch = "x86", not(target_feature = "sse"), target_os = "xun")))]
+#[cfg(not(any(
+    all(target_arch = "x86", not(target_feature = "sse")),
+    target_os = "xun"
+)))]
 #[test]
 fn float_pow() {
     use compiler_builtins::float::pow::{__powidf2, __powisf2};
